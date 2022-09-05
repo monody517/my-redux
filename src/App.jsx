@@ -37,11 +37,13 @@ const _UserModifier = ({dispatch, state, children}) => {
   </div>)
 }
 
-const _User = ({state,dispatch}) => {
+const _User = ({user}) => {
   console.log('User render')
-  return <div>User:{state.user.name}</div>
+  return <div>User:{user.name}</div>
 }
 
-const UserModifier = connect(_UserModifier)
-const User = connect(_User)
+const UserModifier = connect()(_UserModifier)
+const User = connect(state => {
+  return {user: state.user}
+})(_User)
 
