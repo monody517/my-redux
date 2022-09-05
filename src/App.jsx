@@ -3,7 +3,7 @@ import React, {useState, useContext} from 'react'
 const appContext = React.createContext(null)
 export const App = () => {
   const [appState, setAppState] = useState({
-    user: {name: 'frank', age: 18}
+    user: {name: 'jwp', age: 18}
   })
   const contextValue = {appState, setAppState}
   return (
@@ -17,17 +17,30 @@ export const App = () => {
 const 大儿子 = () => <section>大儿子<User/></section>
 const 二儿子 = () => <section>二儿子<UserModifier/></section>
 const 幺儿子 = () => <section>幺儿子</section>
+
 const User = () => {
   const contextValue = useContext(appContext)
   return <div>User:{contextValue.appState.user.name}</div>
-
 }
+
+const reducer = (state, {type, payload}) => {
+  if(type === 'updateUser'){
+    return {
+      ...state,
+      user: {
+        ...payload
+      }
+    }
+  }else{
+    return state
+  }
+}
+
 const UserModifier = () => {
   const {appState, setAppState} = useContext(appContext)
   const contextValue = useContext(appContext)
   const onChange = (e) => {
-    appState.user.name = e.target.value
-    setAppState({...contextValue.appState})
+    setAppState(reducer(appState.user.name,{type: 'updateUser',payload: {name:e.target.value}}))
   }
   return <div>
     <input value={contextValue.appState.user.name}
