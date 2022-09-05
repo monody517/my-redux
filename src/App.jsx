@@ -1,24 +1,5 @@
-import React, {useState, useEffect} from 'react'
-
-const appContext = React.createContext(null)
-
-const store = {
-  state: {
-    user: {name: 'jwp', age: 18}
-  },
-  setState(newState){
-    store.state = newState
-    store.listener.map(fn=>fn(store.state))
-  },
-  listener: [],
-  subscribe(fn){
-    store.listener.push(fn)
-    return () => {
-      const index = store.listener.indexOf(fn)
-      store.listener.splice((index, 1))
-    }
-  }
-}
+import React from 'react'
+import {appContext,connect,store} from './redux.jsx'
 
 export const App = () => {
   return (
@@ -42,36 +23,7 @@ const 幺儿子 = () => {
   return (<section>幺儿子</section>)
 }
 
-const reducer = (state, {type, payload}) => {
-  if(type === 'updateUser'){
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  }else{
-    return state
-  }
-}
 
-const connect = (Component) => {
-  return (props) => {
-    const [,update] = useState({})
-    useEffect(()=>{
-      store.subscribe(()=>{
-            update({})
-      })
-    },[])
-    const dispatch = (action) => {
-      store.setState(reducer(store.state.user.name,action))
-    }
-    return (
-        <Component {...props} dispatch={dispatch} state={store.state}/>
-    )
-  }
-}
 
 const _UserModifier = ({dispatch, state, children}) => {
   console.log('_UserModifier render')
