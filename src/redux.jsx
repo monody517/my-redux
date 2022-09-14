@@ -34,13 +34,18 @@ const changed = (oldState,newState) => {
 }
 export const connect = (selector,dispatchSelector) => (Component) => {
   return (props) => {
+      // 拿读写方法
       const dispatch = (action) => {
           setState(store.reducer(state,action))
       }
       const {state,setState} = store
-      const [,update] = useState({})
+
+      // 对读写方法封装，使组件能更加精确地读写
       const data = selector ? selector(state): {state}
       const dispatchers = dispatchSelector ? dispatchSelector(dispatch): {dispatch}
+
+      // 在store变化的时候订阅，更新页面
+      const [,update] = useState({})
       useEffect(()=>{
           store.subscribe(()=>{
             const newData = selector ? selector(store.state): {state: store.state}
@@ -49,7 +54,7 @@ export const connect = (selector,dispatchSelector) => (Component) => {
             }
           })
       },[selector])
-      console.log('data',data);
+
       return (
           <Component {...props} {...data} {...dispatchers}/>
       )
