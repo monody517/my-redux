@@ -1,10 +1,8 @@
 import React,{useEffect, useState} from "react";
 
-export const store =  {
-    state: {
-        user: {name: 'jwp', age: 18},
-        group: {name: "前端组"}
-    },
+const store =  {
+    state: undefined,
+    reducer: undefined,
     setState(newState){
         store.state = newState
         store.listener.map(fn=>fn(store.state))
@@ -19,18 +17,10 @@ export const store =  {
     }
 }
 
-const reducer = (state, {type, payload}) => {
-  if(type === 'updateUser'){
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  }else{
-    return state
-  }
+export const createStore = (reducer,initState) => {
+    store.state = initState
+    store.reducer = reducer
+    return store
 }
 
 const changed = (oldState,newState) => {
@@ -45,7 +35,7 @@ const changed = (oldState,newState) => {
 export const connect = (selector,dispatchSelector) => (Component) => {
   return (props) => {
       const dispatch = (action) => {
-          setState(reducer(state,action))
+          setState(store.reducer(state,action))
       }
       const {state,setState} = store
       const [,update] = useState({})
@@ -66,4 +56,11 @@ export const connect = (selector,dispatchSelector) => (Component) => {
   }
 }
 
-export const appContext = React.createContext(null)
+const appContext = React.createContext(null)
+export const Provider = ({store,children}) => {
+    return (
+        <appContext.Provider value={store}>
+            {children}
+        </appContext.Provider>
+    )
+}
