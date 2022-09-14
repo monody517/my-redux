@@ -25,15 +25,12 @@ const 幺儿子 = connect(state=>{
   return (<section>幺儿子<div>Group: {group.name}</div></section>)
 })
 
-const _UserModifier = ({dispatch, state, children}) => {
+const _UserModifier = ({updateUser, state, children}) => {
   console.log('_UserModifier render')
-  const onChange = (e) => {
-    dispatch({type: 'updateUser',payload: {name:e.target.value}})
-  }
   return (<div>
     {children}
     <input value={state.user.name}
-      onChange={onChange}/>
+      onChange={(e)=>updateUser({name:e.target.value})}/>
   </div>)
 }
 
@@ -42,7 +39,13 @@ const _User = ({user}) => {
   return <div>User:{user.name}</div>
 }
 
-const UserModifier = connect()(_UserModifier)
+const UserModifier = connect(
+    null,
+    (dispatch)=>{
+    return {
+      updateUser: (attrs)=>dispatch({type: 'updateUser',payload: attrs})
+    }
+})(_UserModifier)
 
 const User = connect(state => {
   return {user: state.user}
