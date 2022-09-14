@@ -18,12 +18,12 @@ const 二儿子 = () => {
   console.log('2222222222')
   return (<section>二儿子<UserModifier>neirong</UserModifier></section>)
 }
-const 幺儿子 = () => {
+const 幺儿子 = connect(state=>{
+  return {group: state.group}
+})(({group}) => {
   console.log('33333333333')
-  return (<section>幺儿子</section>)
-}
-
-
+  return (<section>幺儿子<div>Group: {group.name}</div></section>)
+})
 
 const _UserModifier = ({dispatch, state, children}) => {
   console.log('_UserModifier render')
@@ -43,6 +43,7 @@ const _User = ({user}) => {
 }
 
 const UserModifier = connect()(_UserModifier)
+
 const User = connect(state => {
   return {user: state.user}
 })(_User)
